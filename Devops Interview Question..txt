@@ -1,0 +1,34 @@
+Interview Questions
+
+1.Explain the day to day activites ?
+2.Before deploying to server. what are the check list your taken ?
+3.How will you setup the sonar qube for code quality check ?
+4.How much comfortble with git ?
+5.How much comfortble with build and intergration ?
+6.What are the commonly used git commands ?
+7.while compailation if its failes ? how will you apporch to reslove?
+8.How will you know this from your end or their end the issue is ?
+9.Why Sonarqube.?Is there any specific language or it can be used to any other lang.
+9.1: how do you check it is green or red..? these setup who will do? what will do. 
+10.What you understanding about the Devops ?
+11.How much experience in CI/CD?
+12.Have you experience on Agile ?
+13.How to you rate yourself on git,jenkins,sonarqube,Docker out of 10?
+14.What are challenges you faced in Git ?
+15.what is the .gitignore file?
+16.what is the diffrence between the git fetch and git cherrypick ?
+17.When i use the  git fetch and git pull ?
+18.what is the command used to files can stanging to unstaging area ?
+19.what is command used to remove the particular commit ?
+20.How can I customize the wokrspace in jenkins ?
+21.How to use the  Shell varible in pipeline ?
+22.How can I use the environmental varible for particular pipeline job?
+23.how  you ever configure the mail notifier in Jenkins ?
+24.What is the difference between the declarative and scripted pipeline ?
+25.What kind of release challlenges you faced ?
+
+
+
+
+
+

@@ -1,0 +1,127 @@
+Jenkins 
+
+#its autoomation server, used peform the CI/CD
+
+Dev env : git ( for downlaoding the source code) , Maven , Jenkins 
+
+QA env : Tomcat server for artifact deployment.
+
+
+any activity we need perfom in the form of the jobs 
+
+
+# freestyle job : for these jobs we use the plugins like git and maven , no need to     install in the machine.
+
+#context path :  is the context path part of the URL under which your application will be published in Tomcat. 
+
+# how to call a one job from another job : 
+
+#copy artifact plugin
+
+##################### jenkins property file #################
+It is used to store the secrets and password as environmental variables 
+# manage jekins --->configure system--->global properties---> environmental varibles 
+     thier can declare the environmental variables that can be used for the jobs
+
+############# jenkins intall the orcale virtual box ############
+#curl -vI http://localhost:8080/jenkins/ ----> command to check the jenkins webserver wokring of not , if you want to open in browser then link on the http link.
+#http://localhost:8080
+
+
+#########################################################################################################################
+#devops shack youtube channel : real-time ci-cd pipeline project ( git maven jenkins sonarqube owasp trivy docker)
+ 
+#Pipeline script 
+pipeline {
+  agent any 
+    tools {
+	    jdk11
+		maven 3.6.0
+	}
+environment {                ------------------------> when we use a new tool we need  to confirgure it in pipeline, even in the environment 
+     sonar_home = tool "sonar-scanner "                section so that tool have global scope,
+     stages {
+        stage ( 'git checkout' ) {
+           stapes {
+		     git changelog: false, poll: false, url:'https://github.com/jaislwar246/sectetsanta-generator' 
+		   }
+		stage ('compile stage'){
+		   steps { 
+		        sh " mvn clean compile"
+			}
+		stage ( 'sonarqube-analysis'){
+		  steps {
+		     sh ''' $SCANNER_HOME/bin/sonar-scanner  -Dsonar.url=http:// 15.27.3.20:9000/ -Dsonar.login=squ-148798239jhgd  -Dsonar-projectName=secretsanta-generator \
+			        -Dsonar.java.binaries=.\
+					-Dsonar.proectkey=secret-santa '''
+			}			                                          # sh '' ( shell with single quote have a single command execute 
+													              # sh ''' ( shell with sigle quote with three times means to execute the multiple commands )
+        stage('OWASP scan') {
+            step {
+                dependencdycheck additonalAruguments: '--scan ./', odcinstalltion: 'DP'
+                dependencycheckpublisher pattern: '**/dependency-check-report.xml'				
+                 }
+         stage ('Build') {
+		   steps { 
+		      sh '' mvn clean install ''
+			}
+		}
+	    stage ('docker build and push') {
+		   steps {
+		      scripts {
+			       withdockerregistry(credentailsid: 329u5r09852390823653285', toolname: docker,) { 
+				     sh	"docker build -t santa"
+					 sh "docekr tag santa loky/santa:latest"
+					 sh "docker push loky/santa:latest"
+			        }
+				}
+			}
+		stage ('docker deploy') {
+		 steps {
+		   scripts{  
+			 withdokcerregistry(creditentailid: 2035829057907209205', toolname: 'docker') {
+			   
+			   sh "docker run -d --name santa -p 8080:8080'
+			   }
+			 }
+		}
+	}
+}	
+				
+
+######################### jenkins static parameters pas thorugh the pipeline script
+pipeline {
+    agent any
+    stages {
+        stage('Setup parameters') {
+            steps {
+                script { 
+                    properties([
+                        parameters([
+                            choice(
+                                choices: ['ONE', 'TWO'], 
+                                name: 'PARAMETER_01'
+                            ),
+                            booleanParam(
+                                defaultValue: true, 
+                                description: '', 
+                                name: 'BOOLEAN'
+                            ),
+                            text(
+                                defaultValue: '''
+                                this is a multi-line 
+                                string parameter example
+                                ''', 
+                                 name: 'MULTI-LINE-STRING'
+                            ),
+                            string(
+                                defaultValue: 'scriptcrunch', 
+                                name: 'STRING-PARAMETER', 
+                                trim: true
+                            )
+                        ])
+                    ])
+                }
+            }
+        }
+    }   				

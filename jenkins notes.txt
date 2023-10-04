@@ -1,0 +1,460 @@
+############### Jenkins ############### 
+
+Development stages---> creating feature branch(adding and modifing,testing the code) and again merge it to development branch.
+
+Jenkins is standalone server/servelet : its mean that it can run its own webserver, it can also run as one servelet in an existing framework,such as tomcat.
+
+Advance features in Jenkins
+1.High levle configuration.
+2.number of plugins
+
+
+# for console log output to the file  /var/log/jenkins/jenkins.log  
+
+
+Continues integration : developer commit code to github, automaticallay job will be triggered in the jenkins , if its success package deloply , if its fail it will notify  to the developer.
+
+ #netstat -ntlp ---> this command used to check the 
+
+
+Jenkins setup 
+
+# AWS ec2 ---> redhat 8.0--->
+
+ #yum update -y ----> update the os
+ 
+#yum -y install git ----> install the git 
+
+create the ssh key and copy it  and store in the github 
+
+   #ssh-keygen ----4 enters it will create the pub and private keys
+
+   #cd sshdev
+   #ls
+   #cat cat id_rsa.pub
+> copy the this id_rsa.pub keys
+
+> got to the github settings ---> ssh and jpg keys ---> new ssh key
+     title : jenksins
+     key : paste that copied keys here
+          Add ssh key
+
+
+Add Additonal storage to the Jenkins server
+ #df -h
+  > aws console-->ec2-->volume // (when create the volume server also must be in the same availbility zone)
+ 
+     create volum--> select the storage capacity
+     selct the volume ---> actions --->attach volume 
+#lsblk --> it will show the added devices
+#mkfs.ext4 /dev/xvdf ---> formting the devices for first time 
+#mkdir -p /var/lib/jenkins ---> create a directory in name of the jenkins 
+#cat /etc/fstab
+ add line to below the "uuvid'
+  /dev/xvdf /var/lib/jenkins ext4 defaults 0 0
+ :wq!
+# mount /var/lib/jenkins
+# df -h  ---> now the device/volume attached to the directory.
+
+> Install java in the jenkins server
+
+#yum -y install java-1.8.0-openjdk
+  
+
+
+################# jenkins install thorugh the redhat package ##############
+
+> install jenkins (https://www.jenkins.io/download/ )
+
+   click on the cenos/fedora/redhat 
+ 
+#sudo wget -O /etc/yum.repos.d/jenkins.repo https://pkg.jenkins.io/redhat-stable/jenkins.repo
+#  sudo rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io.key 
+# sudo yum install jenkins
+
+#ls -al /var/lib/jenkins/ ---> it will the shows the jenkins files 
+
+#systemctl status jenkins ---> it will show the status of the jenkins 
+running/stop
+
+#netstat -ntlp ---> this command used dipaly the what are ports availble in the server
+
+         
+
+
+ 
+########### Jenkins install thorugh the war files #############
+jenkins.io/download--->generic java package(.war)
+# wsudo https://get.jenkins.io/war-stable/2.361.1/jenkins.war
+#java -jar jenkins.war
+
+
+################### Jenkins intall thorugh Docker ###########
+
+ jenkins.io/download--->docker
+
+#docker pull jenkins/jenkins  ----> but you already have the docker on the server
+
+
+
+######## configure reverse proxy ##########
+#user who want to connect the jenkins we are allowed to expose the 8080 port 
+we run on the port 80 to connect the user to jenkins
+# for this we need to install the nginx 
+# for nginx install in redhat we need to go for the  epel pakages 
+  for epel packages 
+http:fedoraproject.org/wiki/epel ---->
+// if your os is redhat 8 based on its packages select and copy
+
+#subscription-manager repos --enable codeready-builder-for-rhel-8-$(arch)-rpms
+dnf install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
+
+now we can install the nginx 
+#yum install nginx -y
+
+#vi /etc/nginx/nginx.conf
+
+remove the all the belwo content in that file
+
+ server {
+        listen       80 default_server;
+        listen       [::]:80 default_server;
+        server_name  _;
+        root         /usr/share/nginx/html;
+
+        # Load configuration files for the default server block.
+        include /etc/nginx/default.d/*.conf;
+
+        location / {
+        }
+
+        error_page 404 /404.html;
+            location = /40x.html {
+        }
+
+        error_page 500 502 503 504 /50x.html;
+            location = /50x.html {
+        }
+    }
+
+:wq!
+
+ 
+Now create new file in the name of jenkins.conf 
+
+ #reverse proxy configuration link
+#https://docs.nginx.com/nginx/admin-guide/web-server/reverse-proxy/
+
+#vi /etc/nginx/conf.d/jenkins.conf
+
+upstream jenkins {
+    #server <server-ip-address:8080>;
+	server 35.154.4.51:8080;  #mention the jenkins server public ip 
+}
+server {
+    listen       80 default;
+    server_name   jenkins.cntech.local; # replace 'jenkins.cntech.local' with your server domain name
+	
+	access_log   /var/log/jenkins.access.log;
+	error_log   /var/log/jenkins.error.log;
+location / {
+    proxy_buffers 16 4k;
+    proxy_buffer_size 2k;
+    proxy_set_header Accept-Encoding "";
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_pass http://jenkins;
+
+	}
+}
+  
+:wq!
+
+# systemctl start nginx
+
+# now you can access the jenkins thorugh the domain name, like jenkins.zeeslegorup.com
+
+NOte : In orgnaizaiton  we need yo give the ip address and hostname in the /etc/hosts 
+
+########################### some of the   commands #####################################################################
+ 
+     systemctl start nginx
+     vi /etc/nginx/conf.d/jenkins.conf
+     systemctl start nginx
+     hostnamectl set-hostname 3.89.19.197
+     hostnamectl set-hostname jenkins.example.com
+     vi /etc/nginx/conf.d/jenkins.conf
+     systemctl start nginx
+     hostnamectl set-hostname jenkins.example.com
+     vi /etc/nginx/conf.d/jenkins.conf
+     systemctl status nginx
+     systemctl stop nginx
+     systemctl status nginx
+     systemctl restart nginx
+     systemctl status nginx.service
+     journalctl -xeu nginx.service
+     /var/log/nginx# cat error.log ---> for checking the 
+
+
+
+#########################################################################################################################
+
+Selinux : its like firewall to the redhat/fedora os, if its in "enforceing" which means that its not allollwed any ports to access the server.
+          for accessing any webserver we need change the enforcing to permissive 
+           
+           #getenforce ----> it will shows status of the enforce )
+             enforcing -----( if its in enforceing we can't able to access the anything )
+           #setenforfce permissive ---> this command will set the permissive way , now it access/allow the ports.
+
+
+#########################################################################################################################
+
+
+ #################  jenkins console ##############
+
+new item --->for create a jobs
+people--->admin and users 
+Manage jenkins---> 1.security 
+                   2. status information : system information ( here we can see the all the environmental varibles and all installed plugins)
+
+
+#sourcecdoe management section we have to option 1.none 2.git
+  1.none : it refers to we are not using any source code for the job
+  2.git : we are using source code for the job
+
+
+
+############### Maven buil in Jenkins #########
+
+
+freestyle projects(jobs)
+
+> build-->Invoke top-level Maven targets
+   goals : clean
+           test 
+           compile
+           install
+    save apply
+           
+now the build the job  
+
+
+
+############## Jenkins High availability setup ##################
+
+Jenkins primary And secondary for high availability, if one goes down automatically another one will be up.
+
+> for this configurtion setup we need 1.Two jenkins servers 2.ha proxy server. 3.shared storage (efs)
+
+
+# AWS--->Ec2 3 instances create---> In security group add the rules 8080--->lunch 
+
+#connect to one primary istance & open in gitbash
+  #sudo apt-get update
+  #sudo apt-get install java* --->( * will install the all jdk/jre packages)
+  #wget https://get.jenkins.io/war-stable/2.361.1/jenkins.war  ( paste the jenkins war file url )
+ #java -jar jenkins.war ( to run this command to start the jenkins)
+
+>copy the jenkins passwrod and ip+port open in newtab 
+ give the passsword to login to jenkins console
+
+>setup jenkins name and password for the both servers
+
+
+### creating jenkins credentials ##
+
+# Jenkins master server console ---->manage jenkins---> manage credentials-->system/jenkins--->golbal credientials 
+   # create a new key 
+    # kind : select the ssh username with private key
+    # ID : jenkinsHA ( ID should be common in the jenkins both servers
+    # username : jenkins 
+    # key : copy and paste the private key from the respective servers
+
+> for keys go back to terminal of the servers 
+   #cd .ssh
+   # cat id_rsa ( now the copy the key)
+
+
+For manage storage to both server we need to create NFS ( in aws we are using EFS)
+#### EFS (elastic file storage )
+
+Aws services--->efs-->create file system
+   Name : jenkins  
+   select : regional 
+crreate
+
+> go to jenkins 1 ---> secuirty gorup ---> inbound rules ---> add new rule--> Nfs ----> save.
+
+> go to EFS---> click on cteate filesystem(jenkins)---> go to network--> select the secuirty group which which we created to ec2 servers(jenkins 1&2 )-->SAVE
+
+> go to the jenkins 1 terminal 
+ #sudo apt-get install nfs-utils ---- (to install the nfs servers related packages)
+
+
+
+# Again go to aws EFS  select the filesystem  go to the Attach 
+ 
+  "   #sudo mount -t nfs4 -o nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport fs-0ee971bf826408b83.efs.us-east-1.amazonaws.com:/ /var/lib/jenkins/jobs/   "  (this command will mount the filesystem to that directory.
+
+
+## do same thing to other servers also
+
+#Now go to jenkins console create a job & run it.
+# go another servers console restart the server , that job is replicated here also.
+
+
+Note: In organization we are not going to restart the servers, for this we are going to use the 'API calls" this will reload the jenkins.
+
+## Automation for reload/stop/start jenkins by using corn job 
+
+#for this we need to create the crumb ID 
+  #curl -s 'http:/localhost:8080/crumbIssuer/api/xml?xpath=concat(//crumbRequestfiled,":",//crumb)' -u admin:admin)  
+
+>by using above command we can create the crumb id.
+#curmb_id= copy and paste the generated crumbid moved to crumb_id varible.
+
+#vi reloadjenkins.sh
+  curl -s 'http:/localhost:8080/crumbIssuer/api/xml?xpath=concat(//crumbRequestfiled,":",//crumb)' -u admin:admin)  
+curl -s -XPOST 'http://localhost:8080/reload' -u admin:admin -H "$crumb_id"
+
+:wq!
+
+now creatd script
+#chmod +x reloadjekins.sh
+#vi /etc/cron.d/jekinsrelaod
+  */1 * * * * root /bin/bash /root/reloadjenkins.sh
+
+ :wq:
+
+Now cornjob will created for every minute it will run the job. you see the status of the cornjob.
+#systemctl status  cornd.
+
+####  configuration of the HA proxy ######
+
+#apt install haproxy 
+#cd /etc/haproxy/
+#ls 
+vi /haproxy.conf
+   
+   In this file remove the all lines which are comes under defaults and add forntend(active) backend(passive) servers details.
+
+defaults 
+log global
+maxconn  2000
+mdoe  http
+option rdispatch
+option forwardfor
+option  http-server-close
+retries 3
+timeout http-request 10s
+timeout  queue 1m
+timeout  client 10s
+timeout  server 1m
+timeout  check 10s
+
+frontend ft_jenkins
+   bind *:80
+   default_backend bk_jekins
+   reqadd  X-forwarded-proto:\http
+
+backedn bk_jenkins
+     server ip-172-31-95-137.ec2.internal  172.31.46.14:8080
+     server ip-172-31-86-251.ec2.internal  172.31.86.251:8080
+
+:wq!
+
+
+# systemctl start haproxy
+#systemctl status haproxy
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#################################################################################
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+    
+
+
+

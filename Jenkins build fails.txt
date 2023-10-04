@@ -1,0 +1,36 @@
+Build failures 
+
+1. Real time issues( builds are failed due rto
+2. network issues 
+3. infrastucture(server level) issues 
+4. 
+
+####################     Microservices #########################
+       As each module is an independently deployable unit, you have considerable choices to pick the right technology for the Job. For example, 
+the module that deals with Machine Learning could be written in Python, and the module that deals with Calculations is written in Java.
+And these modules could communicate with each other via REST, GraphQL, or Events.
+Microservices also allow you to choose a polyglot persistent system. 
+You can use MySQL for transaction management, MongoDB for document storage for specific modules, and so on.
+
+  
+# WebClient ↔ Nginx ↔ Spring Cloud Gateway ↔ Order Processing Service ↔ Database
+
+# Deployment complexity 
+	Multiple service instances per host
+	Service instance per host
+	Service instance per VM
+	Service instance per Container
+	Serverless deployment
+	Service deployment platform
+	
+############ logical flow of the microservices inside ############################
+http--->contoller--->serivce--->repository
+                        |				|
+						|				|
+					Message queue    database
+					
+########### service discovery  for the inter service communication ############
+#netflix eureka used for serivce registory
+#aws elb and nginx also used for the  
+
+>CAP theorem :

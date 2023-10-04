@@ -1,0 +1,105 @@
+################  Maven ####################
+For installing the Maven "https://maven.apache.org/download.cgi"
+
+#apt install java* ---> star refers to  it will install the all java pacakges, java is prerequiste.
+
+
+> copy the link of the binary tar file 
+   # wget https://dlcdn.apache.org/maven/maven-3/3.8.6/binaries/apache-maven-3.8.6-bin.tar.gz
+
+#tar -xvf apache-maven-3.8.6-bin.tar.gz
+# mv apache-maven-3.8.6-bin.tar.gz maven ----> rename the filename with maven
+    
+
+########### .profile(dot profile) setup ###################\
+>go to the .profile file 
+#vi .profile 
+  export M2_HOME=/root/maven
+  export PATH=$PATH:$M2_HOME/bin    // add these two line in that file
+:wq!
+
+
+####### fundamentals of Maven #######
+Maven invocation mode
+
+1.#./mvn:archetype:generate ---> it will list out the all suuported project by maven
+ 
+>/root/maven/myapp-->project name it contains the src(source code) and pom.xml file(it contains the gorupid,artifactid)
+
+2. Invocation mode 2
+#mvn package ---> this command used to create the jar file in target directory 
+#mvn clean ---> this command used to remove/delete the target directory.
+#mvn test ---> this command used to run only test package
+#mvn compile ---> to compile the source code.( before the package)
+
+############# POM.xml file #############
+1.super POM : this pom localreop call its dependcy from central pom
+2.Effective  POM : plugins and central repo combine togehter
+
+
+#############  Build lifecycle #####
+three types of lifcycle 
+1.clean lifecycle (phases : pre-clean, clean, post-clean)
+2.default/build lifecycle :compile, package, test 
+3.site lifecycle : 
+
+
+#mvn dependency:tree ---> this command used find the what are the depedency we required.
+#/.M2/repositiry ----> maven local repo path
+
+>surefire plugin used for integretion testing.
+
+> pom.xml is in the xml formate like < project > or <  > everything in the open and close
+ # group id : is the domain of the project 
+ #artifact id : is the name of the project 
+ #version : mention proejct version 
+ 
+
+################### Gradle ###############
+> java application constists : java source code,java bytecode ,xml file,audio,directry sturcutre all these   files we create the jar files,apk files, war files(bundles)
+
+> war fiels = bundles = artifacts all are same , based on the requirement they call it.
+
+> gradle use  groovy and Dsl formate for build .
+> It construct detailed build task, 
+> It manage can depedency.
+> It self update , its auto-retrive the update new versions
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

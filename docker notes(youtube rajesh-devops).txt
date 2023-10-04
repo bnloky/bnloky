@@ -1,0 +1,40 @@
+########### Docker ##########
+#Dockeer client and server , docker images, containers,docker registery
+#docker client : docker build,pull,run 
+#docker server : docker daemon(service) run containers, registery(images)
+#contianer : container is a isolated area, where we  can deploy our application with minimal binaris and libraries.
+
+AWS-->EC2-->amazon linux
+ #yum update -yum
+ #yum install docker -y
+ #usermod -aG docker ec2-usermod
+ #systemctl enble docker  ----> (this command is the part of the "init.d" file once the system if    
+ #systemctl start docker
+ #systemctl status docker 
+#docker info or docker --version
+
+#dokcer images 
+#docker ps ---> listout only running container
+#docker ps -a ---> lisout all the container exited,stoped, killled etc..
+#docker run ubuntu ---> its  first check in the local repo if its there then run it or otherwise it will download from the dockerhub and directly run it as container 
+#docker run -it ubuntu /bin/bash ---> run the conatiner and login into the container 
+# cntrl+p and control+q ----> without stop the container and exit from the container 
+#docker exec -it ubuntu /bin/bash --->this command used to login into the already running conatiner.
+
+Note : we can only stoped containers can be restart and login inside the containers, but  exited or killed containers we can't able to login inside the containers.
+ 
+#docker run -it --name werbserver ubuntu /bin/bash ---> --name name is used for give a name to contaienr while creating a container 
+#docker rename containerid newname---> change the name of the container 
+#docker pasue containername/id ---> to pasue the running container 
+#docker unpasue containername?id ---> to unpasue the pasue contianrer
+# docker stop containername/id ---> to stop the running container
+#docker start containername/id ---> to start the running container
+#docker eait containername?id---> hold the container to killed , this is state where container not running and killed , its is wait list once get mail confirmtion then kill the container
+#docker cp filepath containername/id:/tmp ---> this command used to copy the files from the docker host to container 
+#docekr attach contianerid ---> this command used for login into the running container , exec /bin/bash and attach are both same for login into running cotnainer
+#docker commit containerid iamgename ---> this command used create a iamge from the runnning container
+#
+
+
+#Login to the container as a root user 
+   #docker exec -it -u root 1320de7d122f /bin/bash  

@@ -1,0 +1,102 @@
+################# KT 1 ###################
+
+infotainment dashborad  ---ivi (source code)--integreation team
+cluster dashborad--- DI 
+
+manifest
+   di 
+  ivi (13 repos  ( first 2 .xml fiels are related to calcom and remaining files are developed by  its pure propritery code visteon )
+
+manifest ( ivi--> 2 xml files,  for checking the whcih one belongs to calcom or visteon)
+
+calcom repos 
+visteon developsers develop repos on top of it 
+
+1.xml file
+
+
+# genpack.xml ( whenever the release , that release have a name,  that name and build id  should be mentioned in this repo )
+
+#vhal. xml repo ( need to remember the extra activity for the changes )
+
+# power management(VIP)--->linux(kernal)--->BSP--->HAL--->AOSP(os&packages)frameworks--->Applications&Packages(HMI)
+
+IVI: Android(ASOp-CAF)
+      -Audio
+      -connectvity(Bluetooth,wifi)
+      -HMI(Apps)
+      -RUI(manager repos)
+      -Media
+      -Vhal
+      -tuner
+      -
+DI : cluster os
+
+
+DI
+Develop branch----> int branch  
+( int branch  code change  will be considered for the product build ) 
+
+
+ivi --->branch " hd_dhu_developer" 
+
+
+repo synch
+
+# repo management Gitlab.
+
+
+
+########### KT 2 ###################
+        jenkins 
+#Ec build : it will store cache of the builds.
+
+
+# if build is failed in the QNX stage , we need to inform  the DI team  compailation fail in the QNX stage so, please provide the fix.
+
+
+# Build failuers
+ 1.compailation issues 
+ 2.synch failer issues( git will not properly sych the source code) 
+ 3. while ERROR occurred building a image
+
+# jenkins is installed in the master server
+# jobs will be run node.
+# jenkins master machine archive the all the builed iamges (artifacts), all archived images                        will be delete the after 15 days.
+
+###########  Artifactory ##############
+# All the successfull build jobs will produce the output(build images) stored here.
+# It stored the all artifacts(images)
+
+
+#userbuild
+#userdebug build ;
+
+ 
+
+HD-MR details share -v819 
+
+
+################ KT-3 ###########
+
+# hd_cs_auto_merge build  ( here mentioned all the MR list and HD_BUILD_ID : instana_2346557D
+
+# HD_agent_99release job is the productbuild or main build.
+             tag_name :istana3274827818 --->istana23758819
+             tag_commit_message : 819
+             prvious tag : 818
+
+# Ec build  and incremental build 
+  1.Ec build :In this method it will be  compaile  all tlhe old builds and new MR ,
+  2. Incemental build : in this method only new mr will be complaied and old builds will be in the outfloders (outfloders will not deleted).
+                         
+
+ 
+
+
+
+
+
+
+
+

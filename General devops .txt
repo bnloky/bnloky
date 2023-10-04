@@ -1,0 +1,59 @@
+
+# Ticketing tool for the IT Operations team and Jira for the Development team
+#Traible knowledge :  organization specific knowledge how to follow the some rules and principle to perform the work in that particular org.
+
+#DSOMM is the DevSecOps maturity model that is being developed at the OWASP foundation.
+I was using DSOMM to evaluate DevSecOps maturity for a few startups as a thought exercise. No surprise that most of these were on Level 1 when it came to build & deployment. All of them failed miserably when it came to test & verification.
+I think achieving Level 4 would be a pipe dream for most of the DevSecOps engineers in these places 😀
+If you are a DevOps engineer or are interested in DevSecOps, I highly recommend evaluating where you currently stand using the DSOMM matrix.
+The Evaluation matrix is available at https://lnkd.in/gPQCwHz7 More information on DSOMM is available at https://lnkd.in/g52eHp32
+
+#Ten ways to demotivate and kill your DevOps/SecOps team.
+
+I am being a bit sarcastic here, no scratch that I am being very, very sarcastic here, but the points below are a surefire recipe to kill your DevOps team.
+
+1. Heavily under staff team so that every engineer on the team burns out within the shortest time possible.
+2. Constantly change Roadmaps, OKRs and goal posts so that the team cannot achieve anything meaningful.
+3. Penny pinch on infrastructure and tools so that team ends up working with limited resources
+4. Ensure that your DevOps team is treated as outsiders and not part of the “Engineering team”
+5. Under no circumstances should any achievements by the team be recognized, awarded or rewarded.
+6. When team members come to you minimize their concerns by saying “It is what it is”.
+7. Always setup one way communication. Top down comms is the way to go.
+8. Introduce arcane processes, policies, and tools that no one has ever heard of.
+9. Please for the love of god do away with any learning budget you have, why should DevOps engineers learn? They can learn on the Job!!
+10. Make sure nothing is documented, the tribe needs its knowledge for job security, Let DevOps engineers moonlight as Archeologists who will reverse engineer architecture & implementation for every project.
+   I said 10 but here is an 11th one Never ever, ever allow DevOps teams to take time away from engineering folks. Engineering Time > DevOps Time. Tag DevOps team for everything and let them waste time figuring things out on their own!!
+
+#Given a git repository, how do you take the code all the way to production? With the following requirements.
+1. Must be deployable to multiple environments, in this case to Dev, Staging and Production.
+2. Must be able to build and deploy without any human intervention other than approving a PR to specific branch
+3. Must be able to make configuration changes consumed by the code without having to do a full deployment
+4. Must incorporate basic security aspects such as credentials and container scans etc.
+5. Must be able to notify on build failure and success
+
+#Some of the key skills I look for in candidates during an interview is the ability to repeat back a scenario, ask for clarifications and then begin framing the answer to match the scenario.
+Extra points if they are able to catch the bottleneck and address that first. This skill also buys the candidate enough time to think and compose a solution.
+Another key skill I look for in candidates is the ability to come up with more than one solution for the given problem. Handle curveballs, incorporate constraints or new requirements and provide a solution that while not optimal will get things done.
+
+##########################################################
+One can gather valuable insights about the engineering rigor, team, product, and company by examining the source code and build pipelines. It is important to watch out for certain antipatterns, including:
+
+1. Absence of pipeline for continuous integration and deployment (CI/CD).
+2. Pipelines written solely in shell scripting or running as shell steps.
+3. Confusingly named pipelines that make it difficult to understand their purpose.
+4. Lack of adherence to code quality, security, or other best practices.
+5. Storing build artifacts on the build system itself instead of a proper artifact repository.
+6. Overly complex pipelines with numerous steps and obscure tools, resembling a Rube Goldberg machine.
+7. Pipelines that do not provide feedback, status, or silently hide failures.
+8. Hosting pipelines on a single machine or build node that serves multiple purposes, leading to potential conflicts and inefficiencies.
+9. Absence of retries or timeouts in both the code and pipelines.
+10. Overcomplicating the pipeline logic by hiding its complexity within a convoluted library.
+11. No consideration for security in the code or pipelines, including the absence of security related stages.
+12. Manual pipelines with an excessive number of build parameters (100+ in some cases 😁 ).
+
+It is important to be aware of these antipatterns, as they can indicate potential issues and areas for improvement in the development proce
+
+#############################################    A Rube Goldberg machine  ##########################################
+A Rube Goldberg machine, named after American cartoonist Rube Goldberg, is a chain reaction–type machine or contraption intentionally designed to perform a simple task in an indirect and (impractically) overly complicated way.
+
+#

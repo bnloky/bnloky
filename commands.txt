@@ -1,0 +1,82 @@
+#############################  commands ######################## 
+set -x ----> it refers   
+              set:  It is used to set or unset specific flags and settings( determines the behavior of the script and helps in executing the tasks without any issue.)    
+                    inside the shell environment. It can be used to change or display the shell attributes and parameters. 
+               
+              -x :  It prints the commands and their arguments in the same sequence as they got executed.
+
+
+Flags : its rfers to pass a arugument with commands then you  get required output.a
+        eg : ls -l ,ls list sorting the all files and directories in the cuurent directory with -l refers to longlist(description of th files and directories)
+
+-d : refers to go inside the directory.
+
+&& ---> it refers to AND logic operator it works like first , ;excuted successfully(exit 0 )then only exucte the second command.
+
+
+#### to kill the processs ###
+find the process  #ps aux | grep name/id
+                  #kill name/id
+				  
+
+Error 4xx
+This series mainly addresses errors occurring on the client side.
+• Bad request- 400
+
+• Unauthorized- 401
+
+• Forbidden- 403
+
+• Not found -404
+
+• Conflict-409
+
+• Unsupported media type-415
+
+Error 5xx
+A. This series mainly addresses errors occurring on server side.
+
+B. Internal Server Error-500
+
+C. Not implemented-501
+
+D. Bad Gateway-502
+
+E. Service unavailable-503
+
+F. Gateway timeout-504
+-------------------------------------------
+         SED(stream editor)
+this used to edit or modify the content in the file , new existing data with new data 
+# file1 
+this file containts the student inforamation
+* now i want change the student word replace with employee
+#sed -i 's/student/employee/g' file1  --> sed -i 's/olddata/newdata/g' filename
+cat file1
+this file contains the employee inforamation.
+
+############# linux (beasnt tech) ###########
+#uname -m 0r ( uname -p, -i,)---> it show architecture of the os like x86_64 bit or 32 bit 
+#arch : its show same like the uname 
+#uname -0 : it show the os like linux
+# uname -n : it show the name of the system liek localhost.localdomain
+#hostname : its show the name of the system like uname -n but there is differnece between both of them in usage 
+#uname -a : its show the all the detailss of the server like linux, hostname, arch, dateand time
+
+# types of the desktops 
+  1.gnome ( Gnu's network obeject model environment)
+  2.kDE ( kool desktop environment)
+#uname -o : its show the what kind of the desktop is your using 
+#yum install kde* -y --> this command used to install the kde desktop but its requires lot of the storege like 3 to 4 gb space.
+#Differnce betweeen the gnome and kde is like gnome is like commmand line and graphicals and kde is like windows os .
+# gnome desktops graphical view these components like application, places, system
+#init 0 : this commadn used to shutdown the server
+#init 6 : this command used to reboot the server
+#chvt 20 : this command to switch the 20th terminal , if you opened the n number of terminals if you want switch chvt number of the terminal
+#tty : it show the number of the terminal you currently using.
+########### server log/lock off ###########
+#yum install vlock* -y : this is the packge need to install on the server if you want to logoff the server for while  
+#vlock : this command is going to log the terminal and agian open for it nedd enter the password
+#vlock -a : this command lock the all the 64 terminals 
+
+#subgit : its tool used for migrating the repositroy from the svn to git

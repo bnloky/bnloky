@@ -1,0 +1,100 @@
+######################## AWS ################################
+# VPC : you can launch AWS resources in a logically isolated virtual network that you've defined.virtual network that closely resembles a traditional network that you'd operate in your own data center
+#subnet : A subnet is a range of IP addresses in your VPC, subnet must reside in a single Availability Zone, after add the subnets then you can deploy the resources.
+#IP addressing : You can assign IP addresses, both IPv4 and IPv6, to your VPCs and subnets. You can also bring your public IPv4 and IPv6 GUA addresses to AWS and allocate them to resources in your VPC, such as EC2 instances, NAT gateways, and Network Load Balancers.
+   #IP addresses enable resources in your VPC to communicate with each other, and with resources over the internet.
+#Routing :Use route tables to determine where network traffic from your subnet or gateway is directed.
+#Gateways and endpoints : A gateway connects your VPC to another network. For example, use an internet gateway to connect your VPC to the internet. Use a VPC endpoint to connect to AWS services privately, without the use of an internet gateway or NAT device.
+#Peering connections :Use a VPC peering connection to route traffic between the resources in two VPCs.
+#VPC Flow Logs :A flow log captures information about the IP traffic going to and from network interfaces in your VPC.
+
+################### AWS project for the production environment (vpc)################ abhishek veeramalla youtube
+# create a vpc to deploy the servers in the production environment
+  1.vpc
+  2.autoscaling group and create launch template
+  3.Application loadbalancer and target group
+  4.private and public subnets
+  5.Nat gateway and internetgateway
+
+Lab:
+ step:1
+     Aws-->vpc-->vpc&more
+        Name : gigacars-prod env
+		ipv4 : 10.0.0.0/16 ( go with the default one )
+		number of AZ : 2
+		Nat gateway : 2
+                       then click to create the vpc
+   step:2
+   Autoscaling group :
+    1.first create the launch template 
+      Name : prod-server model
+	  AMI : ubuntu20.04
+	  instance type : t2.micro
+	  keypair : select the keypair
+     create the security group 
+	    vpc : select the vpc created one
+		  ssh  22
+		  custom tcp : 8000
+		 then click to create the launch template 
+    2.create the auto-scaling group
+	  Name : gigacars-prod servers
+	  vpc : gigacars prod env
+	  AZ : priavate subnet 1a
+	       private subnet 1b
+	loadbalancer : no
+    Group size :
+	   desiared : 2
+	   min :  1
+	   max : 4
+	 create the autoscling group 
+ *now the desarired number of servers are going to be created in the priavte subnet
+step:3 create bastion/jump server ( in the public subnet to accesss the private subnet servers)
+     aws-->ec2-->ubuntu
+	 name : bastion/jumpserver
+	 ami: ubuntu20.04
+	 instacetype : t2.micro
+	 publicip : enable 
+	create security group to the bastion server for allow the ssh port
+	  ssh 22  anywhere
+	launch instance.
+step 4 : login to the bastion sever copy the pem key from the localserver to bastion server
+     #scp -i pemkeyfile sourcepath  user@publicip:destinpath
+	   Eg: #scp -i /home/loky/downloads/file.pem /home/lokydownloads/file.pem ubuntu@53.23.10.0:/home/ubuntu
+	once you successfully copied the pem file the bastion server now you can able to connect the private subnet production servers with help of following command
+   #ssh -i /home/ubuntu/.pem  user@privateip 
+     eg: ssh -i /home/ubuntu/loky.pem ubutnu@10.0.31.121 
+	  successfullly login to the server.
+	  
+	 for testing purpose we can create the basic html page in the server ( copying the basic html code from the w3school site)
+	 #vim index.html
+	   paste the html code 
+	 :wq!
+    run this server as http server with hlep of following the command like python create website
+	#python3 -m http.server 8000
+	   this servwer will act as website
+step5: create Target gruop
+      Name: gigacar-prod-targetserver
+	    click on next
+	select the server from the priavate subnet which ever to the part of the application hosting
+	 gigacar-server1 
+	 gigacars-server2
+	now click on to create the targetgroup
+step:6 create the loadbalancer 
+     select the application loadbalancer
+	 Name: gigacar-prod alb
+	internetfacing ----->select the internetfacing option to expose the application to the public.
+	vpc : gigacars-prodenv
+	       AZ-1a
+		   AZ-1b
+	subnet : select the public subnet
+	securitygroup : create a new or use exitng secuirty group 
+	   ssh : 22
+	   customtcp :8000
+	   http : 80 -----> allow the listenr port
+	select the target group : gigacars-prod-target-server
+	click to create the loadbalancer 
+Once loadbalacner is created now you can take the public dns of the loadbalancer and paste it in the browser it will display the webpage.
+
+###################################################################################################################################################	
+
+	

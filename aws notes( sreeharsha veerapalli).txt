@@ -1,0 +1,212 @@
+########### aws storge services ###########
+#s3: simple stroge services --> object storage
+#efs : like nfs (linux and unix ) its provides the share floder for the unique servers(multiple)  aws not recommened for the windows
+#s3 glacier: archive stroge, its used for the old data 
+#storge gateway : its used to map to the your datacenter and s3
+#aws backup : ec2, ebs, efs, stroge gateway 
+
+#the s3 mainly used for store the log files .
+
+############### s3 ########
+types to upload a files to  s3 bucket
+1.Direct upload the files ,  open the bucket click on upload option and upload it. drop and down it.
+2.aws cli thorugh upload the files 
+3.api's through application write the script to run it. ( eg: jenkins log files will store the s3)
+
+#s3 is not global its releted to region , its just show the all regions bucket in dashboard , s3 name only unique to the global
+#IAM only global, what ever the region you created the user that used any regions in world
+
+# s3 availibilty : 99.9
+#s3 durability : 99.9999 
+# >3 ---> its means that your files copy  will save in the 3 availibilty zone, for the durability.
+
+#S3 can costs baased on the three types : one is for store the data, & second one for access the data , third one is for input and output process
+
+
+####### storage classes 
+1.Standard : if your access the data frequuently then we can use  standard
+2.Standard IA : also smae
+3.OneZone IA : its useful for stroing the temperveroy data
+4.Glacier : it useful for uploading archiveing data.
+5.Glacier deep archive 
+
+####### S3 properties #################
+#versioning : first you need the enable the versioning, then you upload the files its maintian the versions. ( its every time crete new version of the files )
+#static website hosting : upload the fiels and go to static website hosting for that bucket name like site name like amazon.com
+#sever access logging : its treated  as a server , log files will be created for the access on the s3 bucket that will be stored.( who ever connect to the s3 bucket to access the data)
+#object -level logging : who ever the store the files in the s3 bucket, its stroe all the log files.
+#Default encryption :
+
+Advance setting : 
+#object log :its used safeguards for deletion of files from the bucket, only gives for the upload persimmison for the user, not deletion and modification.
+#Transfer accelaration : used for faster upload the files ( but it configure thorugh the application level to upload the files
+#events: to trigger the events against the s3 bucket.
+#requester pays : 
+
+##### S3 permissions 
+1.Block pulicaccess
+2.Access control list : its a legacy accesss plolicy , its only used for log delivery purpose.
+3.Bucket policy : its simlar  iam policy , modern access policy its used for giving the permission to access the s3 bucket, 
+4.CORS(cross origin resource domain) configuration : to access from the different domains, like from diffrent domain from allow and what can able to perform the activities like provide REST(put,get,delete) 
+
+Bucket policy : its is way to give a access to the s3 bucket for different users.
+ # aws--->aws policy generator ( we can generate the policy for the s3,sqs,sns,vpc endpoint policy, and IAM policy)
+ 1.Bucket policy for allow access to only of your organization.
+  
+   "Version": "2012-10-17",
+    "Statement": [{
+        "Sid": "AllowGetObject",
+        "Principal": {
+            "AWS": "*"   ----------------------------------------> '*' wildcard means that anonyums accesss  which anyone in the world can access.
+        },
+        "Effect": "Allow",
+        "Action": "s3:GetObject",
+        "Resource": "arn:aws:s3:::DOC-EXAMPLE-BUCKET/*",  -----------------------> bucketname/* star means that to give access to the objects(floders and files)in the bucket
+        "Condition": {
+            "StringEquals": {
+                "aws:PrincipalOrgID": ["o-aa111bb222"]
+            }
+        }
+    }
+   ]
+  }
+#How to give the allow  to the different aws accounts access the s3 bucket.
+  {
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "AddPublicReadCannedAcl",
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": [
+                    "arn:aws:iam::111122223333:root", ---------------------> it refers to give access only for the mentioned aws accounts with haaving root previlages.
+                    "arn:aws:iam::444455556666:root"
+					]
+            },
+            "Action": [
+                "s3:PutObject",
+                "s3:PutObjectAcl"
+            ],
+            "Resource": "arn:aws:s3:::DOC-EXAMPLE-BUCKET/*",
+            "Condition": {
+                "StringEquals": {
+                    "s3:x-amz-acl": [
+                        "public-read"
+                    ]
+                }
+            }
+        }
+    ]
+} 
+
+# Allow the IAM user to access the s3 bucket 
+  "Principal":{
+            "AWS":"arn:aws:iam::111122223333:role/JohnDoe"
+
+Note : we can make simplify or convinence to allow the access tothe s3 bucket through defining in the condition section of the bucket policy
+# cloud trail : used for audit purpose , its store the all activites perform agaist the  
+
+s3 fiels deletion automate.
+#write a python or shell script that script file put in lamda fucntion and add the time stamp like 30 days files long delete in the s3 bucket.
+
+4. Managment :
+   1. lifecycle 2.Replication 3. Analytics 4.Metrics 5.Inventory
+ 1.Lifecycle : It used for moving the data from different standard based on the specification.
+ 2.Replication : it is used for replicate the s3 bucket to another bucket with different region and within region.
+ 5. Inventory : It used for generating report for the what kind files stored.
+
+5.Accesspoint: 
+
+
+lIfecycle s3 :  standrad--->standard IA---->s3 glacier.
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------
+S3- access through the aws cli
+    Remove and deletio of the s3 buckts
+	
+--------------------------------------------------------------------------------------------------------------------------------------------	
+C3/day
+
+S3 Glacier :its a cheap/low price storage. its used for long term backup and archives. and its not used for frequent access of the data.
+s3glacier--->create a valut then upload the files through the backuptools for fast upload .
+#data will upload to the s3 glacier thorugh the backup tool like(netbackup,veeam) and for retiraval we can use "fast glacier" tool.                 
+
+ ########################### EFS ##################
+EBS disadvantage:
+1.ebs attch to single instance.
+2. ebs voulme attche to the server only same availibilty zone instaces.
+
+# for linux servers we use NfS
+# for windows servers we use cifs
+
+prons fo EFS:  
+1.attache to the multiple servers
+2. attch and access from the different availability zones.
+
+creation of efs
+efs--->create filesystem--->select vpc---> select what are availability zones we need.
+
+#for each aavailbility zone we create a network interface(assign ip) so tha through the network interface ec2 server can accesss the efs.
+
+lab: efs attch to three ubuntu servers.
+ 1.create a efs and attch and add the 3 availability zones
+ 2. create the three ubuntu server in three availability zones 
+    ec2--->ubuntu
+	advance setting 
+	userdara:
+	 apt update 
+	 apt install -y openjdk-8-jdk
+	 apt install -y nfs-common
+	 
+launch instace, like create two more instaces.
+3. login to each server and create a directory
+    server1 : mkdir 1a-floder
+	server2 : mkdir 1b-floder
+	server3: mkdir 1c-floder
+# and also create the three server jenkins home directory 
+    #mkdir /var/lib/jenkins ( create in all three servers
+4. mounting the efs 
+   efs--->yourefs file--->select the 1.amazon ec2 mount instruction(from local vpc)
+     now the follow the given instruction to mount the efs to servers.
+	 
+	 #sudo mount -t nfs -o nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport mount-target-ip:/  ~/1a-floder
+
+Note* : execute this command in th all two server and end of the command specify the server flodr name.
+Note : its a tempory mount , once the sesssion is closed it remove or disappears the changes , for permment mount we need place in the fstab file /etc/fstab.
+
+############# fstab ##########################
+for perment mounting add in the /etc/fstab 
+#vi /etc/fstab
+  mount -t nfs -o nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport mount-target-ip:/  ~/1a-floder
+save and exit
+now permently mounted the file system.( do same in all the shared servers)
+-------------------------------------------------------------------------
+for checking the these three server mounting run this file one of the server
+login into one of the server  #watch -n 1 ls -al /1a-floder ----> this command used to watch the server folder evrey one second.(two server execute this command so that changes can we see)
+ #cd /1a-floder
+ #i=1
+ #while 
+ #do 
+ #
+ 
+ 
+ 
+ 
+ ##################################### storage gateway ##################################################################
+# storage gateway mainly used moving the data form on-prmise to cloud , 
+# types of storage gateway 1.file gateway 2.volume gateway 3.tape gateway.
+#we can't directly connect the s3 bucket to on-prmeise datacenter so we used in-between the storage gateway.
+
+#file gateway : this is used for moving the files from the on-premise vm to s3 bucket thorught the filegateway.
+#volume gateway : this will works as copying the datacenter vm image and create a ami in the cloud.
+#tape gateway : used to move the data from the datacenter to cloud ,
+Note: volume and tape gateway is not used much in the these days .
+
+filegateway lab :
+1. create a file gateway and also create a ec2 server in cloud, by using a filegateway move the files from the server to s3 bucket.
+  step 1: create a file gateway
+         #aws--->storage--->storagegateway--->filegateway---->create file gateway.
+		 # select the m4large intances and also add 10 gb for cache purpose ( m4large 80 gb only used for storage gateway )
+		 #create filegateway.

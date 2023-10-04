@@ -1,0 +1,28 @@
+#MRT : mean time to repair
+#LTF : long term to fix
+#PIP : program increment to planning
+
+###################shell script######
+ date --date="yesterday" | awk '{print $1}'
+ date | awk '{print $1}'
+  date +"%a"
+  date --date="yesterday"
+  date --date="yesterday" | awk '{print $1}'
+#!/bin/bash
+day=$(date +"%a")
+touch postgres-$day.log
+##################################
+#!/bin/bash
+#AUTH
+previousday=$(date --date="yesterday" | awk '{print $1}')
+day=$(date +"%a")
+rm -rf postgres-$previousday.log.xz
+xz -v -9 -f  postgres-$previousday.log
+
+###############################################################################################################################################
+#copying the file from the local machine(laptop)linux to remote server(linux)
+  #scp -i .pemkeyfilepath /sourcefilepath user@publicipaddress:destinationpath
+  
+#To connect the bastion server to private subnet servers
+  #ssh -i pemfilename user@praivateip
+

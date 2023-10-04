@@ -1,0 +1,145 @@
+############### soanr qube ############
+# default port for the sonarqube for the is 9000
+#Home directory for the sonarqube is /opt/sonarqube
+#data store directory for the sonarqube is /opt/sonarqube/data
+#bydeafult sonarqube embeded(comes with a) H2 database.
+#sonaqube logs will store in the /opt/sonarqube/logs
+#quality maangement tool
+#SonarQube is a self-managed, automatic code review tool that systematically helps you deliver clean code.
+#static analysis of code to detect bugs, code smells, and security vulnerabilities.
+# installation on docker 
+  # first install the docker and after that excute this command
+     # docker run -d --name sonarqube -p 9000:9000 sonarqube 
+	 #then copy the public ip of server and paste it in new tab pulicip:9000 or if its in desktop vm then http://localhost:9000.
+#Sonarqube for constant inspection of code quality. Sonar performs static code analysis, which offers a detailed report of code smells, bugs, code duplications, vulnerabilities, 
+# static code analysis : it examines the code to identify the issues with the logic and techquie of the code.
+#dynamic code analysis : it examines the outcome of the code like testing 
+#quality 
+   1. code quality
+   2. test quality
+2.test quality : the developer its self write the unittest cases for that we need to applay the code coverage then the quality of the test case will be increase.
+     unit test-->acceptence test--> code coverage( test quality)
+	 
+ #what is code coverage ?
+ # list of tools for code coverage?
+ 
+ 
+------------------------------------------------------
+how soanrqube works (architecture) 
+ #sonarqube server 
+        web front ----> db backend
+ (web front is developed by html,java,css,js)
+ ( backend is databases like h2(default one but can't scaleign),  oracle, postgres)
+#Elastic search : Elasticsearch is used to facilitate fast and accurate information retrieval. It is executed in a dedicated Java process.
+# soanrqube scanner : its a utility which is used to scan the code generate the reports
+#compute engine : The Compute Engine is responsible for processing background tasks.
+# api token : by using a api token you integrate to jenkins server , without provideing the userid and password we can perform the activity thorugh api token. 
+# addons : elastic serach.
+
+----------------------------------------------------------------------------------------------------
+Quality gate : It's alert/inform you when there’s something to fix or review in your new code (code that has been added or changed), 
+                allowing you to maintain high standards and focus on code quality.
+   A quality gate is an indicator of code quality that can be configured to give a go/no-go signal on the current release-worthiness of the code. It indicates whether your code is clean and can move forward.
+     A passing (green) quality gate means the code meets your standard and is ready to be merged.
+     A failing (red) quality gate means there are issues to address.
+ #Quality Gates are a group of threshold measures set on your project such as Technical Debt Measure, Code Coverage, Number of Blocker / Critical Issues, Security Rating / Unit Test Pass Rate and so on.  
+   Code conditons:
+    1. blocker issues 
+	2. code coverage
+	3. info issues 
+	4. crital issues 
+	5. minor & major issues:
+ for these mertrics we can set the greterthan and lessthan to getting alerts and notifications.
+
+#Quality profiles : it refers to define a sets of rules that when voilated it should rise a issues on your codebase.
+#customized quality profiles : we can create customized qulaity profiles and add the required rules for the project( acutullay we access to the developer to so they can add the required rules to the project) then that customized qulaity profile is applaied to the project.
+
+Quality gate : set of thersholds 
+Quality profiles : set of rules
+----------------------------------------------------------------------------------------------------
+PROCESS FLOW 
+1. The source code and scannner are in the build server(jekins) , firstly  trigger the scanner on code  
+2. Scanner will donwload the rules from the sonar server. 
+3. Downloaded rules scanner will applay to source code.
+4. After applaying the rules then its generate the reports 
+5. That generate reoprts send to sonar server database.
+
+---------------------------------------------------------------------------------------------------
+Types of scanner 
+ 1.cmd scanner
+ 2.maven scanner
+ 3.jenkins scnanner
+ --------------------------------------------------
+ CONFIG FILES IN SONARQUBE.
+ 1.server ----> sonar.properties ( its consists entire the sonarqube configuration details )
+ 2.scanner----> sonar-scanner.properties (it consistes configuration files of the scanner)
+ 3.code -------> sonar-project.properties ( it consiss configuration files of the code)
+ -------------------------------------------------------
+ sonarqube web console options
+ 1.project
+ 2.issues
+ 3.Rules : each a language have a set of rules based on the available rules, developer can the decide the which is useful for his code and set tht rules
+          
+-------------------------------------------------------------------------------------------------------------------
+Note : You cannot run SonarQube as root in Unix/linux systems.
+To start a sonarqube.
+  # On other operating systems, as a non-root user execute:
+    /opt/sonarqube/bin/<OS>/sonar.sh console/start/status/stop
+---------------------------------------------------------------------------------------------------------------------------
+# sonarqube will be intregrated with the build server so that we can execute the sonar command through the build tool like " mvn sonar : sonar"
+  it will perform the quality analysis against the source code. ( based the build tool we use the sonar scanners for help to execute the sonarcommands)
+  
+#Code smell : Code smell is a maintainability-related issue in the code.
+
+-------------------------------------------------------------------------------------------------------------------------------
+######################  Sonarqube adminstration Activities ############################
+#Authentication
+#Autherization 
+#Database change 
+
+#Authentication :(who you are) here we can autheticate to access the sonarqube in diffrenet ways
+  login to sonarqube 
+  1.userid and password
+  2.LDAP
+  3.SSO authentication
+#Autherization :(what you can able do) what he able to perfrom the against the sonarqube.
+ #create the user and then provide the permission to user based on the role , go to admin--->setting--->template thier you can select or check box the required access to the user.
+ 
+#Database change :
+  sonarqube comes up with default H2 batabase but its not for the realtime usage and also not support the upgradation of the sonarqube so that migrate to oracle,postgres,mssql
+ #how to migrate H2 batabase to oracle/postgres/mssql
+  step 1: install the docker
+          #yum install docker -y (already installed no need)
+          #systemctl start docker
+          #systemctl enable docker 
+  Step2 : #docker run --name postgres -p 5432:5432 -e POSTGRES_PASSWORD=mysecreatpassword -d postgres
+  Step-3 : modify the sonar.properties file 
+			sonar.jdbc.username=postgres
+			sonar.jdbc.password=mysecretpassword
+			sonar.jdbc.url=jdbc:postgresql://172.31.13.0:5432/postgres?currentSchema=public
+											(add the database praivate Ip)											
+---------------------------------------------------------------------------------------------------------------------------
+#Login to the container as a root user 
+   #docker exec -it -u root 1320de7d122f /bin/bash  
+---------------------------------------------------------------------------------------------------------------------------
+#How to integrate the sonarqube with maven for analysis.
+1.Pom.xml ----> add the soanrqube plugin for te pom file, then maven downlad the dependiceeis
+    <build>
+     <pluginManagement>
+      <plugins>
+       <plugin>
+        <groupId>org.sonarsource.scanner.maven</groupId>
+        <artifactId>sonar-maven-plugin</artifactId>
+        <version>3.7.0.1746</version>
+       </plugin>
+     </plugins>
+   </pluginManagement>
+ </build>
+2.SETTING.XML ----> add the profiles for in the setting.xml file 
+3.mvn sonar:sonar -Dsonarsonar..token=myAuthenticationToken ----> it is a goal for the maven.
+  -----------------------------------------------------------------------------------------------------------------------------------
+Logging : sonarqube produces the four kinds of logs 
+          Main process (aka. App) logs in sonar.log
+		  Web Server (aka. Web) logs in web.log
+		  Compute Engine (aka. CE) logs in ce.log
+		  Elasticsearch (aka. ES) logs in es.log

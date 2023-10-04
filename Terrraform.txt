@@ -1,0 +1,74 @@
+
+###################  EMEA (Europe, the Middle East and Africa), NA (North America), LATAM (Latin America) and APAC (Asia-Pacific).#############
+
+#######################   Terraform #########################################
+
+#Configure your AWS access keys as environment variables:
+	export AWS_ACCESS_KEY_ID=(your access key id)
+	export AWS_SECRET_ACCESS_KEY=(your secret access key)
+	
+	
+terraform state file management 
+ 
+ provider "aws" {
+ region = "us-east-1"
+ access_key = "AKIAZ5G533XBSC54EOE6"
+ secret_key = "cGhnlOTPEA65SywJy+3WoBk+trFfksXfQaWwy5wi"
+}
+terraform {
+  backend "s3" {
+  bucket = "mycloudloky20023"
+  key = "clientusa/projectA"
+  region = "us-east-1"
+  access_key = "AKIAZ5G533XBSC54EOE6"
+  secret_key = "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"
+  dynamodb_table = "myclouddb"
+ }
+}
+
+
+resource "aws_instance" "amazon-server" {
+ instance_type = "t2.micro"
+ ami = "ami-0715c1897453cabd1"
+tags = {
+ Name = "amazon-linux-server"
+ }
+}
+
+#########################  terraform null resources ############################
+Example :
+		resource "aws_instance" "cluster" {
+		  count = 3
+
+		  # ...
+		}
+
+		# The primary use-case for the null resource is as a do-nothing container
+		# for arbitrary actions taken by a provisioner.
+		#
+		# In this example, three EC2 instances are created and then a
+		# null_resource instance is used to gather data about all three
+		# and execute a single action that affects them all. Due to the triggers
+		# map, the null_resource will be replaced each time the instance ids
+		# change, and thus the remote-exec provisioner will be re-run.
+		resource "null_resource" "cluster" {
+		  # Changes to any instance of the cluster requires re-provisioning
+		  triggers = {
+			cluster_instance_ids = join(",", aws_instance.cluster.*.id)
+		  }
+
+		  # Bootstrap script can run on any instance of the cluster
+		  # So we just choose the first in this case
+		  connection {
+			host = element(aws_instance.cluster.*.public_ip, 0)
+		  }
+
+		  provisioner "remote-exec" {
+			# Bootstrap script called with private_ip of each node in the cluster
+			inline = [
+			  "bootstrap-cluster.sh ${join(" ",aws_instance.cluster.*.private_ip)}",
+			]
+		  }
+		}
+
+
